@@ -1,0 +1,39 @@
+# CLEVRER-Humans finetune (paper: ~1076 Q, 150 epochs, batch 128, lr 8e-5).
+# Point HUMANS_* JSONs at your CLEVRER-Humans question files; annotations same as CLEVRER videos.
+
+TRAIN_DATASET_DIRECTORY: "../../CLEVRER-Humans1.0-main/data/clevrer"
+
+DATALOADER:
+  NUM_SAMPLE_FRAMES: 32
+  CLEVRER_FRAME_STRIDE: 4
+  BATCH_SIZE: 128
+  EVAL_BATCH_SIZE: 128
+  NUM_WORKERS: 2
+  CLEVRER_MAX_OBJECTS: 16
+  CLEVRER_TRAIN_JSON: ""
+  CLEVRER_VAL_JSON: ""
+  CLEVRER_HUMANS_TRAIN_JSON: ""
+  CLEVRER_HUMANS_VAL_JSON: ""
+  CLEVRER_ANNOTATION_TRAIN_ROOT: ""
+  CLEVRER_ANNOTATION_VAL_ROOT: ""
+
+VLM:
+  USE_PRETRAINED_LANG_ENCODER: false
+  PERSON_COORDS_LATENT_METHOD: "not_used"
+
+SOLVER:
+  EPOCHS: 150
+  LR: 8.0e-5
+  LANG_ENC_LR: 8.0e-5
+  CRITERION: "cross_entropy"
+  USE_SCHEDULER: true
+  CHECKPOINT_PERIOD: 10
+
+WANDB:
+  EXPERIMENT_NAME: "clevrer_humans_finetune"
+  PROJECT_NAME: "iprm-clevrer-humans"
+
+SAVE_DIRECTORY: "./outputs/clevrer_humans_finetune"
+
+LOAD: true
+LOAD_PATH: ""

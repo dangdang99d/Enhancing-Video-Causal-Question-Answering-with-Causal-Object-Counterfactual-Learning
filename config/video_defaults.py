@@ -1,0 +1,247 @@
+from yacs.config import CfgNode as CN
+
+_C = CN()
+
+_C.TRAIN_SPLIT = "train"
+_C.VAL_SPLIT = "val"
+
+_C.TRAIN_DATASET_DIRECTORY = ""
+_C.TEST_DATASET_DIRECTORY = ""
+_C.FINAL_TEST_DATASET_DIRECTORY = ""
+
+# -----------------------------------------------------------------------------
+# VLM
+# -----------------------------------------------------------------------------
+_C.VLM = CN()
+_C.VLM.VLM_LANG_ONLY_BASELINE = False
+
+_C.VLM.DIM = 512
+_C.VLM.OUTPUT_CLASSES = 4
+_C.VLM.PROCESS_EACH_OPTION_INDEPENDENTLY = True
+_C.VLM.INPUT_VIS_FEAT_RES = (14, 14)
+_C.VLM.IS_TRANSFORMER_VIS_FEAT = False
+_C.VLM.MODULE_TYPE = "iprm"
+
+_C.VLM.LANG_SUMMARY_REP_DROPOUT = 0.08
+_C.VLM.RESET_EMBED_LAYER = False
+_C.VLM.ADD_AUX_LANG_TOKEN = True
+_C.VLM.AUX_LANG_SA_LAYER = False
+_C.VLM.LANG_ENC_DROPOUT = 0.1
+_C.VLM.LANG_SA_ACT_LAYER = "elu"
+
+# False = paper-style CLEVRER(-Humans): bi-LSTM over BERT token embeddings.
+_C.VLM.USE_PRETRAINED_LANG_ENCODER = False
+_C.VLM.PRETRAINED_LANG_ENCODER_PATH = ""
+_C.VLM.LANG_ENCODER_NAME = "bert-base-uncased"
+_C.VLM.PRETRAINED_LANG_TOKENIZER_PATH = ""
+_C.VLM.REMOVE_FIRST_AND_LAST_SPECIAL_TOKENS_PRETRAINED_LANG_ENCODER = True
+_C.VLM.PRETRAINED_LANG_EMBEDDING_PATH = ""
+
+_C.VLM.LSTM_APPLY_AUX_PROJS = False
+_C.VLM.SHARE_QUESTION_AND_OPTION_ENCODER = True
+_C.VLM.SHARE_QUESTION_AND_OPTION_PROJS_METHOD = "share_options"
+_C.VLM.ADD_LANG_AND_CHOICE_POSITIONAL_EMBEDS = False
+_C.VLM.COMBINE_QUES_AND_OPTION_SUMMARY_FOR_MODULE = True
+_C.VLM.CONCAT_QUESTION_AND_OPTION_LANG_REPS_FOR_MODULE = True
+
+_C.VLM.VIS_INPUT_FEATS = 1024
+_C.VLM.VIS_STEM_DROPOUT = 0.18
+_C.VLM.VIS_STEM_NONLIN = "elu"
+_C.VLM.STEM_FILTER_SIZE = 3
+_C.VLM.STEM_PAD = 1
+_C.VLM.ADD_VIS_POSITIONAL_EMBDS = False
+_C.VLM.POS_DROPOUT = 0.1
+
+_C.VLM.USE_FRAME_POS_EMBEDS = True
+
+_C.VLM.NORMALIZE_BBOX_AND_PERSON_COORDS = True
+
+_C.VLM.PERSON_BBOX_LATENT_DIMS = 256
+_C.VLM.PERSON_BBOX_LATENT_DROP = 0.2
+
+_C.VLM.USE_PERSON_EMBEDDING = False
+_C.VLM.UNIFORM_INIT_PERSON_EMBD = True
+_C.VLM.PERSON_EMBD_DIMS = 256
+_C.VLM.PERSON_EMBD_DROPOUT = 0.15
+_C.VLM.PERSON_EMBD_LATENT_DIMS = 128
+_C.VLM.PERSON_EMBED_LATENT_DROP = 0.15
+
+_C.VLM.NUM_PERSON_KEYPOINTS = 17
+# CLEVRER has no human keypoints; paper-style runs use bbox-only person slot.
+_C.VLM.PERSON_COORDS_LATENT_METHOD = "not_used"
+_C.VLM.PERSON_COORDS_LATENT_DIMS = 256
+_C.VLM.PERSON_COORDS_LATENT_DROP = 0.2
+_C.VLM.CONCAT_PERSON_VIS_DROPOUT = 0.0
+
+_C.VLM.OBJ_BBOX_LATENT_DIMS = 128
+_C.VLM.OBJ_BBOX_LATENT_DROP = 0.15
+
+_C.VLM.OBJ_LABEL_EMBD_LAYER_PATH = "./glove_obj_label_embeddings.pth"
+_C.VLM.RESET_OBJ_LABEL_EMBED_LAYER = False
+_C.VLM.OBJ_LABEL_EMBD_DIMS = 300
+_C.VLM.OBJ_LABEL_EMBD_DROPOUT = 0.15
+_C.VLM.OBJ_LABEL_LATENT_DIMS = 128
+_C.VLM.OBJ_LABEL_LATENT_DROP = 0.15
+
+_C.VLM.USE_COMBINED_OBJ_REL_EMBED = False
+_C.VLM.NUM_OBJ_RELS = 28
+_C.VLM.NUM_OBJ_ATT_RELS = 5
+_C.VLM.NUM_OBJ_SPATIAL_RELS = 8
+_C.VLM.NUM_OBJ_CONTACT_RELS = 19
+
+_C.VLM.OBJ_REL_EMBD_DIMS = 256
+_C.VLM.OBJ_REL_EMBD_DROPOUT = 0.15
+_C.VLM.OBJ_REL_LATENT_DIMS = 128
+_C.VLM.OBJ_REL_LATENT_DROP = 0.15
+_C.VLM.UNIFORM_INIT_OBJ_RELS_EMBED = True
+_C.VLM.USE_EGNN_DYNAMICS = False
+_C.VLM.EGNN_CKPT_PATH = ""
+_C.VLM.EGNN_DYN_DIM = 128
+_C.VLM.EGNN_LAYERS = 4
+
+_C.VLM.CONCAT_OBJ_VIS_DROPOUT = 0.0
+
+_C.VLM.INDV_OPTION_CLASSIFIER_DROP = 0.08
+_C.VLM.CLASSIFIER_DROPOUT = 0.15
+_C.VLM.CLASSIFIER_NONLIN = "elu"
+_C.VLM.CLASSIFIER_TYPE = "concat_lang_and_result"
+_C.VLM.INDEPENDENT_OPTION_CLASSIFIER_TYPE = "joint_concat"
+_C.VLM.INDIVIDUAL_OPTION_CLASSIFIER_DIM = 128
+
+# -----------------------------------------------------------------------------
+# IPRM
+# -----------------------------------------------------------------------------
+_C.IPRM = CN()
+
+_C.IPRM.NUM_MEMORY_TOKENS = 6
+_C.IPRM.NUM_COMPUTATION_STEPS = 6
+_C.IPRM.MEMORY_ATT_WINDOW_LEN = 0
+
+_C.IPRM.TIME_SPAN_GROUPS = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]
+
+_C.IPRM.LANG_BLOCK_NONLIN = "tanh"
+_C.IPRM.LANG_BLOCK_MLP_DROP = 0.1
+_C.IPRM.LANG_BLOCK_ATTN_DROP = 0.0
+_C.IPRM.LANG_BLOCK_USE_LN = False
+_C.IPRM.ADD_AUX_LANG_TOKEN = False
+_C.IPRM.DO_TIME_STEP_SPECIFIC_PROJ = False
+
+_C.IPRM.VIS_BLOCK_DROP = 0.15
+_C.IPRM.VIS_BLOCK_ATTN_DROP = 0.0
+_C.IPRM.REDUCTION_R = 1
+_C.IPRM.VIS_BLOCK_NONLIN = "elu"
+_C.IPRM.VIS_BLOCK_USE_LN = False
+
+_C.IPRM.DO_MEMORY_UPDATE = True
+_C.IPRM.DO_MEMORY_OP_INTERACTION = True
+_C.IPRM.MEMORY_STATE_UPDATE_MASK_SELF_IN_ATTN = True
+_C.IPRM.MEMORY_STATE_UPDATE_DO_KEY_PROJ_OF_LANG_STATE = False
+_C.IPRM.MEMORY_STATE_UPDATE_RES_DROPOUT = 0.1
+_C.IPRM.MEMORY_STATE_UPDATE_MOD_DROPOUT = 0.1
+_C.IPRM.MEM_ATTN_MATRIX_DROP = 0.0
+
+_C.IPRM.MEM_OP_UPDATE_NONLIN = "identity"
+_C.IPRM.MEM_RES_UPDATE_NONLIN = "identity"
+
+_C.IPRM.MEM_UPDATE_BLOCK_USE_LN = False
+_C.IPRM.OP_INTERACTION_BLOCK_USE_LN = False
+
+_C.IPRM.MEMORY_OP_STATE_INIT = "random"
+_C.IPRM.MEMORY_RES_STATE_INIT = "random"
+_C.IPRM.MEMORY_RES_POOL_METHOD = "lang_cuml_query_op"
+
+_C.IPRM.USE_PRIOR_RESULT_STATES_FOR_LANG_QUERY = False
+_C.IPRM.PRIOR_RESULT_STATE_MLP_NONLIN_FOR_LANG_RETRIEVAL = "tanh"
+
+_C.IPRM.USE_SIMPLER_VIS_RETRIEVAL_BLOCK = False
+_C.IPRM.USE_MLP_FOR_PRIOR_RESULTS_PROJ_IN_VISRETRIEVAL = False
+_C.IPRM.USE_MLP_FOR_LANG_PROJ_IN_VISRETRIEVAL = False
+_C.IPRM.NONLIN_FOR_LANG_PROJ_IN_VISRETRIEVAL = "elu"
+
+_C.IPRM.DO_CONCAT_PROJ_FOR_QUERY_LANG_RETRIEVAL = False
+_C.IPRM.DO_CONCAT_PROJ_FOR_QUERY_VIS_RETRIEVAL = False
+
+# Causal Gate: op_state-conditioned soft gate on vis tokens before each visual retrieval step
+_C.IPRM.USE_CAUSAL_GATE = False
+
+# -----------------------------------------------------------------------------
+# INPUT
+# -----------------------------------------------------------------------------
+_C.INPUT = CN()
+_C.INPUT.DATASET_NAME = "clevrer_humans"
+
+# -----------------------------------------------------------------------------
+# OUTPUT
+# -----------------------------------------------------------------------------
+_C.OUTPUT = CN()
+_C.OUTPUT.DIM = 4
+
+# -----------------------------------------------------------------------------
+# DataLoader
+# -----------------------------------------------------------------------------
+_C.DATALOADER = CN()
+_C.DATALOADER.NUM_SAMPLE_FRAMES = 32
+_C.DATALOADER.CLEVRER_FRAME_STRIDE = 4
+_C.DATALOADER.NUM_WORKERS = 4
+_C.DATALOADER.BATCH_SIZE = 128
+_C.DATALOADER.EVAL_BATCH_SIZE = 128
+_C.DATALOADER.TRAIN_PERCENT = 1.0
+_C.DATALOADER.VIDEOS_PATH = ""
+_C.DATALOADER.OBJ_PROPOSALS_PATH = ""
+_C.DATALOADER.PERSON_PROPOSALS_PATH = ""
+
+# CLEVRER (official annotation JSON trees; see data.csail.mit.edu/clevrer/README.txt)
+_C.DATALOADER.CLEVRER_TRAIN_JSON = ""
+_C.DATALOADER.CLEVRER_VAL_JSON = ""
+_C.DATALOADER.CLEVRER_EXTRA_VAL_JSONS = ""
+_C.DATALOADER.CLEVRER_HUMANS_TRAIN_JSON = ""
+_C.DATALOADER.CLEVRER_HUMANS_VAL_JSON = ""
+_C.DATALOADER.CLEVRER_ANNOTATION_TRAIN_ROOT = ""
+_C.DATALOADER.CLEVRER_ANNOTATION_VAL_ROOT = ""
+# Paper: Faster R-CNN outputs; load via detector-format JSON (see clevrer_detector_json.py).
+# "annotation" reads MIT annotation_*.json directly. "detector_json" uses export/FRCNN files.
+_C.DATALOADER.CLEVRER_VISUAL_SOURCE = "detector_json"
+_C.DATALOADER.CLEVRER_DETECTOR_JSON_TRAIN_ROOT = ""
+_C.DATALOADER.CLEVRER_DETECTOR_JSON_VAL_ROOT = ""
+_C.DATALOADER.CLEVRER_MAX_OBJECTS = 16
+_C.DATALOADER.DO_BATCH_WISE_MAX_OBJS = False
+
+_C.DATALOADER.MIN_REL_SCORE_THRESH = -1000.0
+_C.DATALOADER.MIN_OBJ_SCORE_THRESH = -1000.0
+_C.DATALOADER.DO_MUTUALLY_EXCL_REL_FILTERING = False
+
+# ---------------------------------------------------------------------------- #
+# Solver
+# ---------------------------------------------------------------------------- #
+_C.SOLVER = CN()
+_C.SOLVER.EPOCHS = 35
+_C.SOLVER.START_SCHEDULER_EPOCH = 0
+_C.SOLVER.LR = 1e-4
+_C.SOLVER.LANG_ENC_LR = 1e-4
+_C.SOLVER.USE_LANG_ENC_LR_FOR_FINETUNE = False
+
+_C.SOLVER.CRITERION = "cross_entropy"
+_C.SOLVER.GRAD_CLIP = 8
+_C.SOLVER.USE_SCHEDULER = True
+_C.SOLVER.WARMUP_EPOCHS = 0
+_C.SOLVER.WARMUP_INIT = 0.0
+_C.SOLVER.FACTOR = 0.5
+_C.SOLVER.PATIENCE = 0
+_C.SOLVER.THRESHOLD = 0.001
+_C.SOLVER.CHECKPOINT_PERIOD = 1
+
+# ---------------------------------------------------------------------------- #
+# weight saving/loading options
+# ---------------------------------------------------------------------------- #
+_C.SAVE_DIRECTORY = "./outputs/clevrer_humans_videoqa"
+_C.SAVE_ATTENTIONS = False
+_C.LOAD = False
+_C.LOAD_PATH = ""
+_C.DEVICE = "cuda"
+
+# ---------------------------------------------------------------------------- #
+# Wandb logging
+# ---------------------------------------------------------------------------- #
+_C.WANDB = CN()
+_C.WANDB.EXPERIMENT_NAME = "clevrer_humans_videoqa"
+_C.WANDB.PROJECT_NAME = "iprm-clevrer-humans"

@@ -1,0 +1,65 @@
+# IPRM NeurIPS 2024 — CLEVRER / CLEVRER-Humans training (paper protocol).
+#
+# Visual (paper): Faster R-CNN bbox + predicted color/shape/material → same tensor path via
+# detector-format JSON per video (see clevrer_detector_json.py). No program / event graph in model.
+# Language: bi-LSTM over BERT token embeddings. Frames: every 4 → 32. Batch 128, lr 8e-5, CE loss.
+#
+# --- Step 1: export detector-format JSON (paper data *interface*; values from GT unless you
+#     replace files with real FRCNN exports) ---
+#   cd videoQA
+#   python tools/export_clevrer_detector_json_from_annotation.py --annotation-root ../../CLEVRER-Humans1.0-main/data/clevrer/annotation_train --output-dir ../../CLEVRER-Humans1.0-main/data/clevrer/detector_json_export/train
+#   python tools/export_clevrer_detector_json_from_annotation.py --annotation-root ../../CLEVRER-Humans1.0-main/data/clevrer/annotation_validation --output-dir ../../CLEVRER-Humans1.0-main/data/clevrer/detector_json_export/val
+#
+# If export dirs are empty, dataloader warns once and falls back to reading annotation_*.json
+# directly (same tensors, different code path).
+#
+# Real Faster R-CNN on videos (torchvision COCO checkpoint; optional --annotation-root for attrs):
+#   python tools/export_detector_json_from_video_frcnn.py --video-root ../../.../videos/train --questions-json ../../.../train.json --output-dir ../../.../detector_json_export/train --annotation-root ../../.../annotation_train --num-gpus 4
+#
+# --- Step 2: train ---
+#   python train_main.py --config-file configs/clevrer_paper.yaml --no-wandb
+# DDP: DATALOADER.BATCH_SIZE / EVAL_BATCH_SIZE 는 GPU(프로세스)당 배치입니다.
+# 논문의 effective batch ≈ 128이면, G개 GPU일 때 대략 BATCH_SIZE ≈ floor(128 / G) 로 맞추세요
+# (예: 4GPU → 32, 3GPU → 42, 전역 합 ≈ 126~128).
+# 4 GPUs:
+#   torchrun --nproc_per_node=4 train_main.py --config-file configs/clevrer_paper.yaml --no-wandb \
+#     DATALOADER.BATCH_SIZE 32 DATALOADER.EVAL_BATCH_SIZE 32
+
+TRAIN_DATASET_DIRECTORY: "../../CLEVRER-Humans1.0-main/data/clevrer"
+
+DATALOADER:
+  NUM_SAMPLE_FRAMES: 32
+  CLEVRER_FRAME_STRIDE: 4
+  BATCH_SIZE: 128
+  EVAL_BATCH_SIZE: 128
+  NUM_WORKERS: 4
+  CLEVRER_MAX_OBJECTS: 16
+  CLEVRER_TRAIN_JSON: ""
+  CLEVRER_VAL_JSON: ""
+  CLEVRER_HUMANS_TRAIN_JSON: ""
+  CLEVRER_HUMANS_VAL_JSON: ""
+  CLEVRER_ANNOTATION_TRAIN_ROOT: "../../CLEVRER-Humans1.0-main/data/clevrer/annotation_train"
+  CLEVRER_ANNOTATION_VAL_ROOT: "../../CLEVRER-Humans1.0-main/data/clevrer/annotation_validation"
+  CLEVRER_VISUAL_SOURCE: detector_json
+  CLEVRER_DETECTOR_JSON_TRAIN_ROOT: "../../CLEVRER-Humans1.0-main/data/clevrer/detector_json_export/train"
+  CLEVRER_DETECTOR_JSON_VAL_ROOT: "../../CLEVRER-Humans1.0-main/data/clevrer/detector_json_export/val"
+
+VLM:
+  USE_PRETRAINED_LANG_ENCODER: false
+  PERSON_COORDS_LATENT_METHOD: "not_used"
+
+SOLVER:
+  EPOCHS: 35
+  LR: 8.0e-5
+  LANG_ENC_LR: 8.0e-5
+  CRITERION: "cross_entropy"
+  CHECKPOINT_PERIOD: 5
+
+WANDB:
+  EXPERIMENT_NAME: "clevrer_iprm_paper_style"
+  PROJECT_NAME: "iprm-clevrer-humans"
+
+SAVE_DIRECTORY: "./outputs/clevrer_paper"
+
+LOAD: false
+LOAD_PATH: ""
